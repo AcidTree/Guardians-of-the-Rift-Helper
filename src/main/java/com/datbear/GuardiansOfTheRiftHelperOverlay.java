@@ -23,18 +23,18 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
   public static final HashMap<Integer, GuardianInfo> GUARDIAN_INFO =
       new HashMap<Integer, GuardianInfo>() {
         {
-          put(43701, GuardianInfo.AIR);
-          put(43705, GuardianInfo.MIND);
-          put(43702, GuardianInfo.WATER);
-          put(43703, GuardianInfo.EARTH);
-          put(43704, GuardianInfo.FIRE);
-          put(43709, GuardianInfo.BODY);
-          put(43710, GuardianInfo.COSMIC);
-          put(43706, GuardianInfo.CHAOS);
-          put(43711, GuardianInfo.NATURE);
-          put(43712, GuardianInfo.LAW);
-          put(43707, GuardianInfo.DEATH);
-          put(43708, GuardianInfo.BLOOD);
+          put(43701, GuardianHelper.AIR);
+          put(43705, GuardianHelper.MIND);
+          put(43702, GuardianHelper.WATER);
+          put(43703, GuardianHelper.EARTH);
+          put(43704, GuardianHelper.FIRE);
+          put(43709, GuardianHelper.BODY);
+          put(43710, GuardianHelper.COSMIC);
+          put(43706, GuardianHelper.CHAOS);
+          put(43711, GuardianHelper.NATURE);
+          put(43712, GuardianHelper.LAW);
+          put(43707, GuardianHelper.DEATH);
+          put(43708, GuardianHelper.BLOOD);
         }
       };
   private static final Color GREEN = new Color(0, 255, 0, 150);
@@ -112,12 +112,12 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
       if (hull == null) continue;
       GuardianInfo info = GUARDIAN_INFO.get(guardian.getId());
 
-      if (info.cellType.compareTo(best) > 0
-          && info.levelRequired < client.getBoostedSkillLevel(Skill.RUNECRAFT)) {
-        if (info.cellType == CellType.Overcharged) {
+      if (info.getCellType().compareTo(best) > 0
+          && info.getLevelRequired() < client.getBoostedSkillLevel(Skill.RUNECRAFT)) {
+        if (info.getCellType() == CellType.Overcharged) {
           return CellType.Overcharged;
         }
-        best = info.cellType;
+        best = info.getCellType();
       }
     }
     return best;
@@ -157,20 +157,20 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
       GuardianInfo info = GUARDIAN_INFO.get(guardian.getId());
 
       if (config.hideHighLvl()
-          && info.levelRequired > client.getBoostedSkillLevel(Skill.RUNECRAFT)) {
+          && info.getLevelRequired() > client.getBoostedSkillLevel(Skill.RUNECRAFT)) {
         continue;
       }
 
       if (config.pointBalanceHelper()) {
-        if (!info.isCatalytic && balance == PointBalance.NEED_CATALYTIC) {
+        if (!info.isCatalytic() && balance == PointBalance.NEED_CATALYTIC) {
           continue;
-        } else if (info.isCatalytic && balance == PointBalance.NEED_ELEMENTAL) {
+        } else if (info.isCatalytic() && balance == PointBalance.NEED_ELEMENTAL) {
           continue;
         } else if (balance == PointBalance.BALANCED) {
           if (bestCell == null) {
             bestCell = bestCell(activeGuardians);
           }
-          if (info.cellType != bestCell) {
+          if (info.getCellType() != bestCell) {
             continue;
           }
         }
@@ -187,7 +187,7 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
       BufferedImage img = info.getRuneImage(itemManager);
       OverlayUtil.renderImageLocation(
           client, graphics, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
-      if (!info.spawnTime.isPresent()) continue;
+      if (!info.getSpawnTime().isPresent()) continue;
 
       Point imgLocation =
           Perspective.getCanvasImageLocation(
@@ -195,7 +195,7 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
       long millis =
           ChronoUnit.MILLIS.between(
               Instant.now(),
-              info.spawnTime.get().plusMillis((long) Math.floor(GUARDIAN_TICK_COUNT * 600)));
+              info.getSpawnTime().get().plusMillis((long) Math.floor(GUARDIAN_TICK_COUNT * 600)));
       String timeRemainingText = "" + (Math.round(millis / 100) / 10d);
       Rectangle2D strBounds =
           graphics.getFontMetrics().getStringBounds(timeRemainingText, graphics);
@@ -218,7 +218,7 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
     for (int talisman : inventoryTalismans) {
       Optional<GameObject> talismanGuardian =
           guardians.stream()
-              .filter(x -> GUARDIAN_INFO.get(x.getId()).talismanId == talisman)
+              .filter(x -> GUARDIAN_INFO.get(x.getId()).getTalismanId() == talisman)
               .findFirst();
 
       if (talismanGuardian.isPresent()

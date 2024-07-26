@@ -39,7 +39,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
           554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 564, 565, 4694, 4695, 4696, 4697, 4698,
           4699);
   private static final Set<Integer> TALISMAN_IDS =
-      GuardianInfo.ALL.stream().mapToInt(x -> x.talismanId).boxed().collect(Collectors.toSet());
+      GuardianHelper.ALL.stream().mapToInt(x -> x.getTalismanId()).boxed().collect(Collectors.toSet());
   private static final int GREAT_GUARDIAN_ID = 11403;
   private static final int CATALYTIC_GUARDIAN_STONE_ID = 26880;
   private static final int ELEMENTAL_GUARDIAN_STONE_ID = 26881;
@@ -90,6 +90,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   @Inject private GuardiansOfTheRiftHelperStartTimerOverlay startTimerOverlay;
   @Inject private GuardiansOfTheRiftHelperInactivePortalOverlay inactivePortalOverlay;
   @Inject private Notifier notifier;
+  private GuardianInfo guardianInfo;
 
   @Getter(AccessLevel.PACKAGE)
   private NPC greatGuardian;
@@ -320,14 +321,14 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
       if (spriteId != lastSpriteId) {
         if (lastSpriteId > 0) {
           Optional<GuardianInfo> lastGuardian =
-              GuardianInfo.ALL.stream().filter(g -> g.spriteId == lastSpriteId).findFirst();
+              GuardianHelper.ALL.stream().filter(g -> g.getSpriteId() == lastSpriteId).findFirst();
           if (lastGuardian.isPresent()) {
             lastGuardian.get().despawn();
           }
         }
 
         Optional<GuardianInfo> currentGuardian =
-            GuardianInfo.ALL.stream().filter(g -> g.spriteId == spriteId).findFirst();
+            GuardianHelper.ALL.stream().filter(g -> g.getSpriteId() == spriteId).findFirst();
         if (currentGuardian.isPresent()) {
           currentGuardian.get().spawn();
         }
