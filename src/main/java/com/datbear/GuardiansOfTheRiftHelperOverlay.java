@@ -2,6 +2,8 @@ package com.datbear;
 
 import net.runelite.api.*;
 import net.runelite.api.Point;
+import net.runelite.api.Client;
+import net.runelite.client.RuneLite;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -112,6 +114,10 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
             if(hull == null) continue;
 
             GuardianInfo info = GUARDIAN_INFO.get(guardian.getId());
+            if (config.hideHighLvl() && info.levelRequired > client.getBoostedSkillLevel(Skill.RUNECRAFT)){
+                continue;
+            }
+
             Color color = info.getColor(config);
             graphics.setColor(color);
 

@@ -157,6 +157,14 @@ public interface GuardiansOfTheRiftHelperConfig extends Config
     )
     default boolean colorGuardiansByTier() { return false; }
 
+    @ConfigItem(
+            keyName = "hideHighLvl",
+            name = "Don't highlight high level guardians",
+            description = "Doesn't highlight guardians that are too high level",
+            section = outlines
+    )
+    default boolean hideHighLvl() { return false; }
+
     @Alpha
     @ConfigItem(
             keyName = "weakGuardianColor",
@@ -218,7 +226,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config
     {
         return Color.GREEN;
     }
-    
+
     @ConfigItem(
             keyName = "startTimerOverlayLocation",
             name = "Start Timer Overlay Location",
