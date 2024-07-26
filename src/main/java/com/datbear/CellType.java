@@ -1,8 +1,8 @@
 package com.datbear;
 
 public enum CellType {
-    Weak,
-    Medium,
-    Strong,
-    Overcharged
+  Weak,
+  Medium,
+  Strong,
+  Overcharged
 }
