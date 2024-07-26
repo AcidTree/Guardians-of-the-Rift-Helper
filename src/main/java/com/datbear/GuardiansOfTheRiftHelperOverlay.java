@@ -1,5 +1,8 @@
 package com.datbear;
 
+import com.datbear.util.CellType;
+import com.datbear.util.GuardianHelper;
+import com.datbear.util.PointBalance;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;

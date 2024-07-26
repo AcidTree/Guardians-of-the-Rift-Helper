@@ -1,5 +1,6 @@
 package com.datbear;
 
+import com.datbear.util.TimerOverlayLocation;
 import java.awt.*;
 import net.runelite.client.config.*;
 

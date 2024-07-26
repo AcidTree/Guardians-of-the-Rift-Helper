@@ -1,4 +1,4 @@
-package com.datbear;
+package com.datbear.util;
 
 public enum PointBalance {
   BALANCED,

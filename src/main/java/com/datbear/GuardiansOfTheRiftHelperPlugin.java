@@ -1,5 +1,6 @@
 package com.datbear;
 
+import com.datbear.util.GuardianHelper;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
 import java.awt.*;

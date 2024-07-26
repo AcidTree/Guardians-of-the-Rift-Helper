@@ -1,5 +1,6 @@
 package com.datbear;
 
+import com.datbear.util.CellType;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.time.Instant;

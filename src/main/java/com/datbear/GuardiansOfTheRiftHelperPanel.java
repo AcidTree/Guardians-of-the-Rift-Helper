@@ -3,6 +3,7 @@ package com.datbear;
 import static net.runelite.api.MenuAction.RUNELITE_OVERLAY_CONFIG;
 import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 
+import com.datbear.util.TimerOverlayLocation;
 import java.awt.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

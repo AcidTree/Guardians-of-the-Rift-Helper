@@ -1,5 +1,6 @@
-package com.datbear;
+package com.datbear.util;
 
+import com.datbear.GuardianInfo;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import net.runelite.api.ItemID;
