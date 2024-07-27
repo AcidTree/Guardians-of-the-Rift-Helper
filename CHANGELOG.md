@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0]
 ### Added
 - Option to highlight guardians based on current points to keep points balanced
 - Configurable guardian outlines
@@ -14,9 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable quick pass delay (tylanphear)
 - Highlight deposit pool when runes in inventory (JKLimov)
 - Toggle for rune icons
+- Save points and load on launch
 ### Changed
 - Project formatting
 - Updated build
+- isInMinigame now calculated using varbit
 ### Fixed
 - Canvas returned null for text location causing a null reference (robin239)
 
