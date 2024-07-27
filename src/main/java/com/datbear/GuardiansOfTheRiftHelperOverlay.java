@@ -4,7 +4,6 @@ import com.datbear.util.CellType;
 import com.datbear.util.GuardianHelper;
 import com.datbear.util.PointBalance;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -229,46 +228,41 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
             guardian, config.guardianBorderWidth(), color, config.guardianOutlineFeather());
       }
 
-      Point imgLocation = null;
-      BufferedImage img = null;
+      // Draw rune image if enabled
       if (config.drawRunes()) {
-        img = info.getRuneImage(itemManager);
+        BufferedImage img = info.getRuneImage(itemManager);
         OverlayUtil.renderImageLocation(
             client, graphics, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
-
-        imgLocation =
-            Perspective.getCanvasImageLocation(
-                client, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
       }
       if (info.getSpawnTime().isEmpty()) {
         continue;
       }
 
+      // calculate timer
       long millis =
           ChronoUnit.MILLIS.between(
               Instant.now(),
               info.getSpawnTime().get().plusMillis((long) Math.floor(GUARDIAN_TICK_COUNT * 600)));
       String timeRemainingText = "" + (Math.round(millis / 100) / 10d);
-      Rectangle2D strBounds =
-          graphics.getFontMetrics().getStringBounds(timeRemainingText, graphics);
-      Point textLocation =
-          Perspective.getCanvasTextLocation(
-              client,
-              graphics,
-              guardian.getLocalLocation(),
-              timeRemainingText,
-              60);
-      if (textLocation == null) {
-        continue;
-      }
 
+      // set text location above rune if enabled
+      Point textLocation;
       if (config.drawRunes()) {
         textLocation =
-            new Point(
-                (int) (imgLocation.getX() + img.getWidth() / 2d - strBounds.getWidth() / 2d),
-                textLocation.getY() + RUNE_IMAGE_OFFSET);
+            Perspective.getCanvasTextLocation(
+                client,
+                graphics,
+                guardian.getLocalLocation(),
+                timeRemainingText,
+                RUNE_IMAGE_OFFSET + 60);
+      } else {
+        textLocation =
+            Perspective.getCanvasTextLocation(
+                client, graphics, guardian.getLocalLocation(), timeRemainingText, 60);
       }
-      OverlayUtil.renderTextLocation(graphics, textLocation, timeRemainingText, Color.WHITE);
+      if (textLocation != null) {
+        OverlayUtil.renderTextLocation(graphics, textLocation, timeRemainingText, Color.WHITE);
+      }
     }
 
     for (int talisman : inventoryTalismans) {
