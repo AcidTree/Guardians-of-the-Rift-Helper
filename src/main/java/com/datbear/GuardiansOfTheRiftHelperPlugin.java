@@ -462,6 +462,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
       reset();
     } else if (event.getGameState() == GameState.LOGIN_SCREEN) {
       isInMinigame = false;
+      savePoints();
     }
   }
 
@@ -482,8 +483,8 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     activeGame = client.getVarbitValue(Varbits.GOTR_ENDED) == 0;
     inSideArea = client.getVarbitValue(Varbits.PORTAL_AREA) == 1;
     // TODO: remove
-    log.debug("in isInMinigame updated -> {}", isInMinigame);
-    log.debug("in activeGame updated -> {}", activeGame);
+    //    log.debug("in isInMinigame updated -> {}", isInMinigame);
+    //    log.debug("in activeGame updated -> {}", activeGame);
   }
 
   /**

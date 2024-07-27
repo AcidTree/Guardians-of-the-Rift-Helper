@@ -308,8 +308,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
     return 3;
   }
 
-  //TODO: hide
-  @ConfigItem(keyName = "bankedPoints", name = "", description = "", hidden = false)
+  @ConfigItem(keyName = "bankedPoints", name = "", description = "", hidden = true)
   default String bankedPoints() {
     return "";
   }
