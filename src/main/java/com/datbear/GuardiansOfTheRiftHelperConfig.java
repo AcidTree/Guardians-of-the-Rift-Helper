@@ -307,4 +307,13 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
   default int quickPassCooldown() {
     return 3;
   }
+
+  //TODO: hide
+  @ConfigItem(keyName = "bankedPoints", name = "", description = "", hidden = false)
+  default String bankedPoints() {
+    return "";
+  }
+
+  @ConfigItem(keyName = "bankedPoints", name = "", description = "", hidden = true)
+  void bankedPoints(String str);
 }

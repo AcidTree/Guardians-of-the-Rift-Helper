@@ -208,6 +208,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     expandCardinal.put("NE", "north east");
     expandCardinal.put("E", "east");
     expandCardinal.put("SE", "south east");
+    loadPoints();
   }
 
   @Override
@@ -536,6 +537,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     catalyticEssencePile = null;
     elementalEssencePile = null;
     client.clearHintArrow();
+    savePoints();
   }
 
   @Provides
@@ -641,5 +643,18 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
       return savedPoints;
     }
     return savedPoints += currentPoints / 100;
+  }
+
+  private void loadPoints() {
+    String s = config.bankedPoints();
+    if (!s.isEmpty()) {
+      String[] ss = s.split(",");
+      elementalRewardPoints = Integer.parseInt(ss[0]);
+      catalyticRewardPoints = Integer.parseInt(ss[1]);
+    }
+  }
+
+  private void savePoints() {
+    config.bankedPoints(String.format("%d,%d", elementalRewardPoints, catalyticRewardPoints));
   }
 }
