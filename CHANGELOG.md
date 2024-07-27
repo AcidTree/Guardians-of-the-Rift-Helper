@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Notify when barrier unlocks (tylanphear)
 - Configurable quick pass delay (tylanphear)
 - Highlight deposit pool when runes in inventory (JKLimov)
+- Toggle for rune icons
 ### Changed
 - Project formatting
 - Updated build
