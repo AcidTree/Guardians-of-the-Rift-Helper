@@ -1,6 +1,7 @@
 package com.datbear;
 
 import com.datbear.util.GuardianHelper;
+import com.datbear.util.Varbits;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
 import java.awt.*;
@@ -464,8 +465,10 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     if (!isInMainRegion) {
       return;
     }
-    currentElementalRewardPoints = client.getVarbitValue(13686);
-    currentCatalyticRewardPoints = client.getVarbitValue(13685);
+    //noinspection MagicConstant
+    currentElementalRewardPoints = client.getVarbitValue(Varbits.ELEMENTAL_POINTS);
+    //noinspection MagicConstant
+    currentCatalyticRewardPoints = client.getVarbitValue(Varbits.CATALYTIC_POINTS);
   }
 
   /**
