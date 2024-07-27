@@ -48,6 +48,15 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
   default int guardianOutlineFeather() {
     return 0;
   }
+  @ConfigItem(
+          position = 3,
+          keyName = "drawRunes",
+          name = "Display Runes",
+          description = "Specify between 0-4 how much of the model outline should be faded",
+          section = style)
+  default boolean drawRunes() {
+    return true;
+  }
 
   @ConfigItem(
       position = 0,

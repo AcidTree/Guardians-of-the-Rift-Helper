@@ -229,16 +229,21 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
             guardian, config.guardianBorderWidth(), color, config.guardianOutlineFeather());
       }
 
-      BufferedImage img = info.getRuneImage(itemManager);
-      OverlayUtil.renderImageLocation(
-          client, graphics, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
+      Point imgLocation = null;
+      BufferedImage img = null;
+      if (config.drawRunes()) {
+        img = info.getRuneImage(itemManager);
+        OverlayUtil.renderImageLocation(
+            client, graphics, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
+
+        imgLocation =
+            Perspective.getCanvasImageLocation(
+                client, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
+      }
       if (info.getSpawnTime().isEmpty()) {
         continue;
       }
 
-      Point imgLocation =
-          Perspective.getCanvasImageLocation(
-              client, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
       long millis =
           ChronoUnit.MILLIS.between(
               Instant.now(),
@@ -252,15 +257,17 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
               graphics,
               guardian.getLocalLocation(),
               timeRemainingText,
-              RUNE_IMAGE_OFFSET + 60);
+              60);
       if (textLocation == null) {
         continue;
       }
 
-      textLocation =
-          new Point(
-              (int) (imgLocation.getX() + img.getWidth() / 2d - strBounds.getWidth() / 2d),
-              textLocation.getY());
+      if (config.drawRunes()) {
+        textLocation =
+            new Point(
+                (int) (imgLocation.getX() + img.getWidth() / 2d - strBounds.getWidth() / 2d),
+                textLocation.getY() + RUNE_IMAGE_OFFSET);
+      }
       OverlayUtil.renderTextLocation(graphics, textLocation, timeRemainingText, Color.WHITE);
     }
 
