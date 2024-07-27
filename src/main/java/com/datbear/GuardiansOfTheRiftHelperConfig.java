@@ -24,7 +24,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
   @ConfigSection(
       name = "Guardian Render Style",
       closedByDefault = true,
-      position = 0,
+      position = 2,
       description = "Highlighting style")
   String style = "style";
 
@@ -48,18 +48,19 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
   default int guardianOutlineFeather() {
     return 0;
   }
+
   @ConfigItem(
-          position = 3,
-          keyName = "drawRunes",
-          name = "Display Runes",
-          description = "Specify between 0-4 how much of the model outline should be faded",
-          section = style)
+      position = 3,
+      keyName = "drawRunes",
+      name = "Display Runes",
+      description = "Specify between 0-4 how much of the model outline should be faded",
+      section = style)
   default boolean drawRunes() {
     return true;
   }
 
   @ConfigItem(
-      position = 0,
+      position = 5,
       keyName = "guardianOutline",
       name = "Highlight outline",
       description = "Configures whether or not NPC should be highlighted by outline",
@@ -84,10 +85,45 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
     return true;
   }
 
+  @Alpha
+  @ConfigItem(
+      keyName = "catalyticGuardianColor",
+      name = "Catalytic outline",
+      description = "Color of the outline on the active catalytic guardian.",
+      position = 0,
+      section = outlines)
+  default Color catalyticGuardianColor() {
+    return Color.RED;
+  }
+
+  @Alpha
+  @ConfigItem(
+      keyName = "elementalGuardianColor",
+      name = "Elemental outline",
+      description = "Color of the outline on the active elemental guardian.",
+      position = 1,
+      section = outlines)
+  default Color elementalGuardianColor() {
+    return Color.GREEN;
+  }
+
+  @ConfigItem(
+      keyName = "outlineGreatGuardian",
+      name = "Outline Great Guardian",
+      description =
+          "Outlines the Great Guardian when you have "
+              + "elemental or catalytic essence in your inventory.",
+      position = 2,
+      section = outlines)
+  default boolean outlineGreatGuardian() {
+    return true;
+  }
+
   @ConfigItem(
       keyName = "outlineCellTable",
       name = "Outline cell table",
       description = "Outlines the Cell table when you have no cells remaining.",
+      position = 3,
       section = outlines)
   default boolean outlineCellTable() {
     return true;
@@ -97,59 +133,10 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "outlineDepositPool",
       name = "Outline deposit pool",
       description = "Outlines the Deposit Pool when you have runes in your inventory.",
+      position = 4,
       section = outlines)
   default boolean outlineDepositPool() {
     return true;
-  }
-
-  @ConfigItem(
-      keyName = "outlineGreatGuardian",
-      name = "Outline Great Guardian",
-      description =
-          "Outlines the Great Guardian when you have "
-              + "elemental or catalytic essence in your inventory.",
-      section = outlines)
-  default boolean outlineGreatGuardian() {
-    return true;
-  }
-
-  @ConfigItem(
-      keyName = "pointBalanceHelper",
-      name = "Balance Helper",
-      description = "Highlights the guardian needed to keep points balanced or highest tier",
-      section = outlines)
-  default boolean pointBalanceHelper() {
-    return false;
-  }
-
-  @ConfigItem(
-      keyName = "quickPassCooldown",
-      name = "Quick-Pass Cooldown",
-      description =
-          "Adds a tick delay to the Quick-Pass menu option so you don't enter/leave"
-              + " by spam clicking the gate with Menu Entry Swapper's quick-pass option enabled.")
-  default int quickPassCooldown() {
-    return 3;
-  }
-
-  @Alpha
-  @ConfigItem(
-      keyName = "elementalGuardianColor",
-      name = "Elemental outline",
-      description = "Color of the outline on the active elemental guardian.",
-      section = outlines)
-  default Color elementalGuardianColor() {
-    return Color.GREEN;
-  }
-
-  @Alpha
-  @ConfigItem(
-      keyName = "catalyticGuardianColor",
-      name = "Catalytic outline",
-      description = "Color of the outline on the active catalytic guardian.",
-      section = outlines)
-  default Color catalyticGuardianColor() {
-    return Color.RED;
   }
 
   @ConfigItem(
@@ -158,7 +145,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       description =
           "Outlines active portal guardians with colors based on "
               + "their Cell charge tiers instead of Elemental vs Catalytic.",
-      position = 2,
+      position = 5,
       section = outlines)
   default boolean colorGuardiansByTier() {
     return false;
@@ -168,8 +155,19 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "hideHighLvl",
       name = "Don't highlight high level guardians",
       description = "Doesn't highlight guardians that are too high level",
+      position = 6,
       section = outlines)
   default boolean hideHighLvl() {
+    return false;
+  }
+
+  @ConfigItem(
+      keyName = "pointBalanceHelper",
+      name = "Balance Helper",
+      description = "Highlights the guardian needed to keep points balanced or highest tier",
+      position = 7,
+      section = outlines)
+  default boolean pointBalanceHelper() {
     return false;
   }
 
@@ -178,7 +176,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "weakGuardianColor",
       name = "Weak outline",
       description = "Color of the outline on an active weak guardian.",
-      position = 3,
+      position = 8,
       section = outlines)
   default Color weakGuardianColor() {
     return Color.WHITE;
@@ -189,7 +187,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "mediumGuardianColor",
       name = "Medium outline",
       description = "Color of the outline on an active medium guardian.",
-      position = 4,
+      position = 9,
       section = outlines)
   default Color mediumGuardianColor() {
     return Color.BLUE;
@@ -200,7 +198,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "strongGuardianColor",
       name = "Strong outline",
       description = "Color of the outline on an active strong guardian.",
-      position = 5,
+      position = 10,
       section = outlines)
   default Color strongGuardianColor() {
     return Color.GREEN;
@@ -211,7 +209,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "overchargedGuardianColor",
       name = "Overcharged outline",
       description = "Color of the outline on an active overcharged guardian.",
-      position = 6,
+      position = 11,
       section = outlines)
   default Color overchargedGuardianColor() {
     return Color.RED;
@@ -222,7 +220,7 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "essencePileColor",
       name = "Essence pile outline",
       description = "Color of the outline on essence piles.",
-      position = 7,
+      position = 12,
       section = outlines)
   default Color essencePileColor() {
     return Color.GREEN;
@@ -298,5 +296,15 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       section = overlays)
   default Color potentialBalanceColor() {
     return Color.GREEN;
+  }
+
+  @ConfigItem(
+      keyName = "quickPassCooldown",
+      name = "Quick-Pass Cooldown",
+      description =
+          "Adds a tick delay to the Quick-Pass menu option so you don't enter/leave"
+              + " by spam clicking the gate with Menu Entry Swapper's quick-pass option enabled.")
+  default int quickPassCooldown() {
+    return 3;
   }
 }
