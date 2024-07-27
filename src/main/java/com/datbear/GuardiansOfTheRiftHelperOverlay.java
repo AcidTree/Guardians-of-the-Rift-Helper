@@ -22,6 +22,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
+/** Main class for highlighting objects. */
 public class GuardiansOfTheRiftHelperOverlay extends Overlay {
   public static final HashMap<Integer, GuardianInfo> GUARDIAN_INFO =
       new HashMap<Integer, GuardianInfo>() {
@@ -55,9 +56,18 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
   private final GuardiansOfTheRiftHelperPlugin plugin;
   private final GuardiansOfTheRiftHelperConfig config;
 
+  /**
+   * Initialises Overlay.
+   *
+   * @param client {@link net.runelite.api.Client}
+   * @param plugin {@link GuardiansOfTheRiftHelperPlugin}
+   * @param config {@link GuardiansOfTheRiftHelperConfig}
+   */
   @Inject
   public GuardiansOfTheRiftHelperOverlay(
-      Client client, GuardiansOfTheRiftHelperPlugin plugin, GuardiansOfTheRiftHelperConfig config) {
+      final Client client,
+      final GuardiansOfTheRiftHelperPlugin plugin,
+      final GuardiansOfTheRiftHelperConfig config) {
     super();
     setPosition(OverlayPosition.DYNAMIC);
     setLayer(OverlayLayer.ABOVE_SCENE);
@@ -107,17 +117,28 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
     }
   }
 
+  /**
+   * Finds the best cell the player can obtain.
+   *
+   * @param activeGuardians {@link Set} of {@link GameObject} guardians to search
+   * @return {@link CellType}
+   */
   private CellType bestCell(final Set<GameObject> activeGuardians) {
     CellType best = CellType.Weak;
     for (final GameObject guardian : activeGuardians) {
-      if (guardian == null) continue;
+      if (guardian == null) {
+        continue;
+      }
       Shape hull = guardian.getConvexHull();
-      if (hull == null) continue;
+      if (hull == null) {
+        continue;
+      }
       GuardianInfo info = GUARDIAN_INFO.get(guardian.getId());
 
       if (info.getCellType().compareTo(best) > 0
           && info.getLevelRequired() < client.getBoostedSkillLevel(Skill.RUNECRAFT)) {
         if (info.getCellType() == CellType.Overcharged) {
+          // Return early if no higher cells
           return CellType.Overcharged;
         }
         best = info.getCellType();
@@ -126,6 +147,12 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
     return best;
   }
 
+  /**
+   * Calculates the balance of points. Used by: {@link
+   * GuardiansOfTheRiftHelperConfig#pointBalanceHelper()}
+   *
+   * @return {@link PointBalance}
+   */
   private PointBalance currentBalance() {
     PointBalance val = PointBalance.BALANCED;
     final int potElementalPoints = plugin.potentialPointsElemental();
@@ -139,41 +166,55 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
   }
 
   private void renderActiveGuardians(Graphics2D graphics) {
-    if (!plugin.isInMainRegion()) return;
+    if (!plugin.isInMainRegion()) {
+      return;
+    }
 
     Set<GameObject> activeGuardians = plugin.getActiveGuardians();
     Set<GameObject> guardians = plugin.getGuardians();
     Set<Integer> inventoryTalismans = plugin.getInventoryTalismans();
 
+    // pointBalanceHelper
     PointBalance balance = PointBalance.BALANCED;
     CellType bestCell = null;
 
     if (config.pointBalanceHelper()) {
       balance = currentBalance();
     }
+    // end pointBalanceHelper
 
     for (GameObject guardian : activeGuardians) {
-      if (guardian == null) continue;
+      if (guardian == null) {
+        continue;
+      }
       Shape hull = guardian.getConvexHull();
-      if (hull == null) continue;
+      if (hull == null) {
+        continue;
+      }
 
       GuardianInfo info = GUARDIAN_INFO.get(guardian.getId());
 
+      // hideHighLvl
       if (config.hideHighLvl()
           && info.getLevelRequired() > client.getBoostedSkillLevel(Skill.RUNECRAFT)) {
         continue;
       }
 
+      // pointBalanceHelper
       if (config.pointBalanceHelper()) {
         if (!info.isCatalytic() && balance == PointBalance.NEED_CATALYTIC) {
+          // skip highlighting if we don't need this type
           continue;
         } else if (info.isCatalytic() && balance == PointBalance.NEED_ELEMENTAL) {
+          // skip highlighting if we don't need this type
           continue;
         } else if (balance == PointBalance.BALANCED) {
+          // points are balanced so the highest cell will be highlighted
           if (bestCell == null) {
             bestCell = bestCell(activeGuardians);
           }
           if (info.getCellType() != bestCell) {
+            // skip highlighting if there is a better cell
             continue;
           }
         }
@@ -182,6 +223,7 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
       Color color = info.getColor(config);
       graphics.setColor(color);
 
+      // guardianOutline
       if (config.guardianOutline()) {
         modelOutlineRenderer.drawOutline(
             guardian, config.guardianBorderWidth(), color, config.guardianOutlineFeather());
@@ -190,7 +232,9 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
       BufferedImage img = info.getRuneImage(itemManager);
       OverlayUtil.renderImageLocation(
           client, graphics, guardian.getLocalLocation(), img, RUNE_IMAGE_OFFSET);
-      if (!info.getSpawnTime().isPresent()) continue;
+      if (info.getSpawnTime().isEmpty()) {
+        continue;
+      }
 
       Point imgLocation =
           Perspective.getCanvasImageLocation(
@@ -209,7 +253,9 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
               guardian.getLocalLocation(),
               timeRemainingText,
               RUNE_IMAGE_OFFSET + 60);
-      if (textLocation == null) continue;
+      if (textLocation == null) {
+        continue;
+      }
 
       textLocation =
           new Point(
@@ -227,6 +273,8 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
       if (talismanGuardian.isPresent()
           && activeGuardians.stream().noneMatch(x -> x.getId() == talismanGuardian.get().getId())) {
         GuardianInfo talismanGuardianInfo = GUARDIAN_INFO.get(talismanGuardian.get().getId());
+
+        // guardianOutline
         if (config.guardianOutline()) {
           modelOutlineRenderer.drawOutline(
               talismanGuardian.get(),
@@ -234,6 +282,7 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
               talismanGuardianInfo.getColor(config),
               config.guardianOutlineFeather());
         }
+
         OverlayUtil.renderImageLocation(
             client,
             graphics,

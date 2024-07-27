@@ -4,6 +4,7 @@ import com.datbear.util.TimerOverlayLocation;
 import java.awt.*;
 import net.runelite.client.config.*;
 
+/** Configs, displayed in plugin settings window. */
 @ConfigGroup("guardiansOfTheRiftHelper")
 public interface GuardiansOfTheRiftHelperConfig extends Config {
   @ConfigSection(
@@ -96,7 +97,8 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "outlineGreatGuardian",
       name = "Outline Great Guardian",
       description =
-          "Outlines the Great Guardian when you have elemental or catalytic essence in your inventory.",
+          "Outlines the Great Guardian when you have "
+              + "elemental or catalytic essence in your inventory.",
       section = outlines)
   default boolean outlineGreatGuardian() {
     return true;
@@ -115,7 +117,8 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "quickPassCooldown",
       name = "Quick-Pass Cooldown",
       description =
-          "Adds a tick delay to the Quick-Pass menu option so you don't enter/leave by spam clicking the gate with Menu Entry Swapper's quick-pass option enabled.")
+          "Adds a tick delay to the Quick-Pass menu option so you don't enter/leave"
+              + " by spam clicking the gate with Menu Entry Swapper's quick-pass option enabled.")
   default int quickPassCooldown() {
     return 3;
   }
@@ -144,7 +147,8 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
       keyName = "outlineGuardiansByTier",
       name = "Color guardians by cell tier",
       description =
-          "Outlines active portal guardians with colors based on their Cell charge tiers instead of Elemental vs Catalytic.",
+          "Outlines active portal guardians with colors based on "
+              + "their Cell charge tiers instead of Elemental vs Catalytic.",
       position = 2,
       section = outlines)
   default boolean colorGuardiansByTier() {

@@ -20,6 +20,8 @@ public class GuardianInfo {
   private Optional<Instant> spawnTime = Optional.empty();
 
   /**
+   * Creates a guardian.
+   *
    * @param levelRequired Level required by player to access guardian
    * @param runeId Rune associated with the guardian
    * @param talismanId Talisman used to access guardian
@@ -59,8 +61,10 @@ public class GuardianInfo {
   }
 
   /**
+   * Colours to use for highlighting guardians.
+   *
    * @param config instance of config to lookup colours.
-   * @return Returns color defined in config to highlight guardian.
+   * @return Returns colour defined in config to highlight guardian.
    */
   public Color getColor(GuardiansOfTheRiftHelperConfig config) {
     if (config.colorGuardiansByTier()) {

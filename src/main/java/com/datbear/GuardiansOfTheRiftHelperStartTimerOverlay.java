@@ -9,14 +9,24 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.Overlay;
 
+/** Timer Overlay. */
 public class GuardiansOfTheRiftHelperStartTimerOverlay extends Overlay {
   private final Client client;
   private final GuardiansOfTheRiftHelperPlugin plugin;
   private final GuardiansOfTheRiftHelperConfig config;
 
+  /**
+   * Creates timers.
+   *
+   * @param client {@link net.runelite.api.Client}
+   * @param plugin {@link GuardiansOfTheRiftHelperPlugin}
+   * @param config {@link GuardiansOfTheRiftHelperConfig}
+   */
   @Inject
   public GuardiansOfTheRiftHelperStartTimerOverlay(
-      Client client, GuardiansOfTheRiftHelperPlugin plugin, GuardiansOfTheRiftHelperConfig config) {
+      final Client client,
+      final GuardiansOfTheRiftHelperPlugin plugin,
+      final GuardiansOfTheRiftHelperConfig config) {
     super(plugin);
     this.client = client;
     this.plugin = plugin;

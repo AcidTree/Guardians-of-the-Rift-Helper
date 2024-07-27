@@ -15,14 +15,24 @@ import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
+/** Shows the information box. */
 public class GuardiansOfTheRiftHelperPanel extends OverlayPanel {
   private final Client client;
   private final GuardiansOfTheRiftHelperPlugin plugin;
   private final GuardiansOfTheRiftHelperConfig config;
 
+  /**
+   * Initialises the info box.
+   *
+   * @param client {@link net.runelite.api.Client}
+   * @param plugin {@link GuardiansOfTheRiftHelperPlugin}
+   * @param config {@link GuardiansOfTheRiftHelperConfig}
+   */
   @Inject
   public GuardiansOfTheRiftHelperPanel(
-      Client client, GuardiansOfTheRiftHelperPlugin plugin, GuardiansOfTheRiftHelperConfig config) {
+      final Client client,
+      final GuardiansOfTheRiftHelperPlugin plugin,
+      final GuardiansOfTheRiftHelperConfig config) {
     super(plugin);
     this.client = client;
     this.plugin = plugin;

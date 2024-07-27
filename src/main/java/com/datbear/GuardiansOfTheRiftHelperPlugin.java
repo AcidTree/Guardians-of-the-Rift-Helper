@@ -24,6 +24,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
+/** Main class for the GOTR Helper. */
 @Slf4j
 @PluginDescriptor(
     name = "Guardians of the Rift Helper",
@@ -40,7 +41,10 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
           554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 564, 565, 4694, 4695, 4696, 4697, 4698,
           4699);
   private static final Set<Integer> TALISMAN_IDS =
-      GuardianHelper.ALL.stream().mapToInt(x -> x.getTalismanId()).boxed().collect(Collectors.toSet());
+      GuardianHelper.ALL.stream()
+          .mapToInt(GuardianInfo::getTalismanId)
+          .boxed()
+          .collect(Collectors.toSet());
   private static final int GREAT_GUARDIAN_ID = 11403;
   private static final int CATALYTIC_GUARDIAN_STONE_ID = 26880;
   private static final int ELEMENTAL_GUARDIAN_STONE_ID = 26881;
@@ -207,6 +211,11 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     reset();
   }
 
+  /**
+   * Checks inventory for highlighting npcs/objects.
+   *
+   * @param event {@link net.runelite.api.events.ItemContainerChanged}
+   */
   @Subscribe
   public void onItemContainerChanged(ItemContainerChanged event) {
     if (!isInMainRegion
@@ -233,16 +242,21 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
 
     List<Integer> invTalismans =
         Arrays.stream(items)
-            .mapToInt(x -> x.getId())
-            .filter(x -> TALISMAN_IDS.contains(x))
+            .mapToInt(Item::getId)
+            .filter(TALISMAN_IDS::contains)
             .boxed()
             .collect(Collectors.toList());
-    if (invTalismans.stream().count() != inventoryTalismans.stream().count()) {
+    if ((long) invTalismans.size() != (long) inventoryTalismans.size()) {
       inventoryTalismans.clear();
       inventoryTalismans.addAll(invTalismans);
     }
   }
 
+  /**
+   * Monitors game state each tick.
+   *
+   * @param tick {@link net.runelite.api.events.GameTick}
+   */
   @Subscribe
   public void onGameTick(GameTick tick) {
     isInMinigame = checkInMinigame();
@@ -278,7 +292,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     }
 
     if (portalWidget != null && !portalWidget.isHidden()) {
-      if (!portalSpawnTime.isPresent() && lastPortalDespawnTime.isPresent()) {
+      if (portalSpawnTime.isEmpty() && lastPortalDespawnTime.isPresent()) {
         lastPortalDespawnTime = Optional.empty();
         if (isFirstPortal) {
           isFirstPortal = false;
@@ -340,6 +354,11 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     return lastSpriteId;
   }
 
+  /**
+   * Gets game objects on spawn.
+   *
+   * @param event {@link net.runelite.api.events.GameObjectSpawned}
+   */
   @Subscribe
   public void onGameObjectSpawned(GameObjectSpawned event) {
     GameObject gameObject = event.getGameObject();
@@ -383,11 +402,19 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     }
   }
 
+  /**
+   * Checks barrier locks and portal changes.
+   *
+   * @param event {@link net.runelite.api.events.GameObjectDespawned}
+   */
   @Subscribe
   public void onGameObjectDespawned(GameObjectDespawned event) {
+    // Portal monitoring
     if (event.getGameObject().getId() == PORTAL_ID) {
       client.clearHintArrow();
     }
+
+    // Barrier state monitoring
     if (event.getGameObject().getId() == LOCKED_BARRIER_ID) {
       if (entryBarrierIsLocked.orElse(false)) {
         notifier.notify("Rift Barrier is about to unlock!");
@@ -399,6 +426,11 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     }
   }
 
+  /**
+   * Watches for great guardian spawn.
+   *
+   * @param npcSpawned {@link net.runelite.api.events.NpcSpawned}
+   */
   @Subscribe
   public void onNpcSpawned(NpcSpawned npcSpawned) {
     NPC npc = npcSpawned.getNpc();
@@ -407,6 +439,11 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     }
   }
 
+  /**
+   * Watches for login screen or loading.
+   *
+   * @param event {@link net.runelite.api.events.GameStateChanged}
+   */
   @Subscribe
   public void onGameStateChanged(GameStateChanged event) {
     if (event.getGameState() == GameState.LOADING) {
@@ -417,18 +454,34 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     }
   }
 
+  /**
+   * onVarbitChanged.
+   *
+   * @param event {@link net.runelite.api.events.VarbitChanged}
+   */
   @Subscribe
   public void onVarbitChanged(VarbitChanged event) {
-    if (!isInMainRegion) return;
+    if (!isInMainRegion) {
+      return;
+    }
     currentElementalRewardPoints = client.getVarbitValue(13686);
     currentCatalyticRewardPoints = client.getVarbitValue(13685);
   }
 
+  /**
+   * Watches messages for game state changes.
+   *
+   * @param chatMessage {@link net.runelite.api.events.ChatMessage}
+   */
   @Subscribe
   public void onChatMessage(ChatMessage chatMessage) {
-    if (!isInMainRegion) return;
+    if (!isInMainRegion) {
+      return;
+    }
     if (chatMessage.getType() != ChatMessageType.SPAM
-        && chatMessage.getType() != ChatMessageType.GAMEMESSAGE) return;
+        && chatMessage.getType() != ChatMessageType.GAMEMESSAGE) {
+      return;
+    }
 
     String msg = chatMessage.getMessage();
     if (msg.contains("You step through the portal")) {
@@ -477,9 +530,16 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     return configManager.getConfig(GuardiansOfTheRiftHelperConfig.class);
   }
 
+  /**
+   * Quick pass barrier.
+   *
+   * @param event {@link net.runelite.api.events.MenuOptionClicked}
+   */
   @Subscribe
   public void onMenuOptionClicked(MenuOptionClicked event) {
-    if (config.quickPassCooldown() == 0) return;
+    if (config.quickPassCooldown() == 0) {
+      return;
+    }
 
     // Only allow one click on the entry barrier's quick-pass option for every 3 game ticks
     if (event.getId() == 43700 && event.getMenuAction().getId() == 5) {
@@ -491,6 +551,11 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     }
   }
 
+  /**
+   * Mutes annoying npc.
+   *
+   * @param event {@link net.runelite.api.events.OverheadTextChanged}
+   */
   @Subscribe
   public void onOverheadTextChanged(OverheadTextChanged event) {
     if (!("Apprentice Tamara".equals(event.getActor().getName())
@@ -502,6 +567,12 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     }
   }
 
+  /**
+   * Colours portal spawn timer based on spawn window.
+   *
+   * @param timeSincePortal Seconds since last portal
+   * @return {@link Color} to use
+   */
   public Color getTimeSincePortalColor(int timeSincePortal) {
     if (isFirstPortal) {
       // first portal takes about 40 more seconds to spawn
@@ -527,6 +598,13 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     return PORTAL_SPRITE_ID;
   }
 
+  /**
+   * Renders text.
+   *
+   * @param g {@link Graphics}
+   * @param text text to display
+   * @param rect Area
+   */
   public void drawCenteredString(Graphics g, String text, Rectangle rect) {
     FontMetrics metrics = g.getFontMetrics();
     int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
