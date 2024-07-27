@@ -21,10 +21,10 @@ public final class Varbits {
   public static final int GOTR_ARENA = 13691;
 
   /**
-   * If the player is in an active gotr game.
+   * If there is in an active gotr game, does not check if the player is in the game.
    *
    * <p>0 = false <br>
-   * * 1 = true
+   * 1 = true
    */
   public static final int GOTR_ENDED = 13688;
 

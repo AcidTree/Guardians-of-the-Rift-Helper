@@ -120,6 +120,9 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   private boolean isInMinigame;
 
   @Getter(AccessLevel.PACKAGE)
+  private boolean activeGame;
+
+  @Getter(AccessLevel.PACKAGE)
   private boolean isInMainRegion;
 
   @Getter(AccessLevel.PACKAGE)
@@ -171,19 +174,23 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   //                      == False -> Barrier was last seen unlocked
   private Optional<Boolean> entryBarrierIsLocked = Optional.empty();
 
-  private boolean checkInMinigame() {
-    GameState gameState = client.getGameState();
-    if (gameState != GameState.LOGGED_IN && gameState != GameState.LOADING) {
-      return false;
-    }
-
-    Widget elementalRuneWidget = client.getWidget(PARENT_WIDGET_ID);
-    return elementalRuneWidget != null;
-  }
-
+  /**
+   * Checks if in anywhere gotr area.
+   *
+   * @return true if in GOTR map area
+   */
   private boolean checkInMainRegion() {
     int[] currentMapRegions = client.getMapRegions();
     return Arrays.stream(currentMapRegions).anyMatch(x -> x == MINIGAME_MAIN_REGION);
+  }
+
+  /**
+   * Checks is player is in active game.
+   *
+   * @return true if in active game
+   */
+  public boolean isPlayingGame() {
+    return activeGame && isInMinigame;
   }
 
   @Override
@@ -260,7 +267,6 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
    */
   @Subscribe
   public void onGameTick(GameTick tick) {
-    isInMinigame = checkInMinigame();
     isInMainRegion = checkInMainRegion();
     if (entryBarrierClickCooldown > 0) {
       entryBarrierClickCooldown--;
@@ -456,19 +462,23 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   }
 
   /**
-   * onVarbitChanged.
+   * Updates key variables on varbit change.
    *
    * @param event {@link net.runelite.api.events.VarbitChanged}
    */
+  @SuppressWarnings("MagicConstant")
   @Subscribe
   public void onVarbitChanged(VarbitChanged event) {
     if (!isInMainRegion) {
       return;
     }
-    //noinspection MagicConstant
     currentElementalRewardPoints = client.getVarbitValue(Varbits.ELEMENTAL_POINTS);
-    //noinspection MagicConstant
     currentCatalyticRewardPoints = client.getVarbitValue(Varbits.CATALYTIC_POINTS);
+    isInMinigame = client.getVarbitValue(Varbits.GOTR_ARENA) == 1;
+    activeGame = client.getVarbitValue(Varbits.GOTR_ENDED) == 0;
+    // TODO: remove
+    log.debug("in isInMinigame updated -> {}", isInMinigame);
+    log.debug("in activeGame updated -> {}", activeGame);
   }
 
   /**
