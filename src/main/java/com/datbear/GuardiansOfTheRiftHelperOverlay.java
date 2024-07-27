@@ -89,7 +89,9 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
   }
 
   private void renderPortal(Graphics2D graphics) {
-    if (plugin.getPortalSpawnTime().isPresent() && plugin.getPortal() != null) {
+    if (!plugin.isInSideArea()
+        && plugin.getPortalSpawnTime().isPresent()
+        && plugin.getPortal() != null) {
       Instant spawnTime = plugin.getPortalSpawnTime().get();
       GameObject portal = plugin.getPortal();
       long millis =

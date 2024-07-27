@@ -126,6 +126,9 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   private boolean isInMainRegion;
 
   @Getter(AccessLevel.PACKAGE)
+  private boolean inSideArea;
+
+  @Getter(AccessLevel.PACKAGE)
   private boolean outlineGreatGuardian = false;
 
   @Getter(AccessLevel.PACKAGE)
@@ -477,6 +480,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     currentCatalyticRewardPoints = client.getVarbitValue(Varbits.CATALYTIC_POINTS);
     isInMinigame = client.getVarbitValue(Varbits.GOTR_ARENA) == 1;
     activeGame = client.getVarbitValue(Varbits.GOTR_ENDED) == 0;
+    inSideArea = client.getVarbitValue(Varbits.PORTAL_AREA) == 1;
     // TODO: remove
     log.debug("in isInMinigame updated -> {}", isInMinigame);
     log.debug("in activeGame updated -> {}", activeGame);
