@@ -46,7 +46,7 @@ public class GuardiansOfTheRiftHelperPanel extends OverlayPanel {
 
   @Override
   public Dimension render(Graphics2D graphics) {
-    if ((!plugin.isInMainRegion() && !plugin.isInMinigame()) || !config.showPointsOverlay()) {
+    if (!config.showPointsOverlay() || (!plugin.isInMainRegion() && !plugin.isInMinigame())) {
       return null;
     }
 

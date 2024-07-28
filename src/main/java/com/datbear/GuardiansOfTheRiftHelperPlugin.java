@@ -1,5 +1,8 @@
 package com.datbear;
 
+import static com.datbear.util.SearchTiles.searchX;
+import static com.datbear.util.SearchTiles.searchY;
+
 import com.datbear.util.GuardianHelper;
 import com.datbear.util.Varbits;
 import com.google.common.collect.ImmutableSet;
@@ -122,6 +125,12 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   @Getter(AccessLevel.PACKAGE)
   private boolean activeGame;
 
+  /**
+   * set by {@link #checkInMainRegion()} each tick.
+   *
+   * @see #checkInMainRegion()
+   * @see #onGameTick(GameTick)
+   */
   @Getter(AccessLevel.PACKAGE)
   private boolean isInMainRegion;
 
@@ -178,7 +187,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   private Optional<Boolean> entryBarrierIsLocked = Optional.empty();
 
   /**
-   * Checks if in anywhere gotr area.
+   * Checks if in anywhere gotr area/map.
    *
    * @return true if in GOTR map area
    */
@@ -457,12 +466,17 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
    */
   @Subscribe
   public void onGameStateChanged(GameStateChanged event) {
-    if (event.getGameState() == GameState.LOADING) {
-      // on region changes the tiles get set to null
-      reset();
-    } else if (event.getGameState() == GameState.LOGIN_SCREEN) {
-      isInMinigame = false;
-      savePoints();
+    switch (event.getGameState()) {
+      case LOADING:
+        reset();
+        break;
+      case LOGIN_SCREEN:
+        isInMinigame = false;
+        break;
+      case LOGGED_IN:
+        outlineUnchargedCellTable = true;
+        break;
+      default:
     }
   }
 
@@ -471,7 +485,6 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
    *
    * @param event {@link net.runelite.api.events.VarbitChanged}
    */
-  @SuppressWarnings("MagicConstant")
   @Subscribe
   public void onVarbitChanged(VarbitChanged event) {
     if (!isInMainRegion) {
@@ -482,9 +495,6 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
     isInMinigame = client.getVarbitValue(Varbits.GOTR_ARENA) == 1;
     activeGame = client.getVarbitValue(Varbits.GOTR_ENDED) == 0;
     inSideArea = client.getVarbitValue(Varbits.PORTAL_AREA) == 1;
-    // TODO: remove
-    //    log.debug("in isInMinigame updated -> {}", isInMinigame);
-    //    log.debug("in activeGame updated -> {}", activeGame);
   }
 
   /**
