@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
-- Cell table not highlighted on first login
+- Cell table highlighted when entering game
+- Guardians not highlighted with point balance when level too high
 
 
 ## [1.2.0]

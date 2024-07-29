@@ -520,17 +520,6 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
         break;
       default:
     }
-    //    currentElementalRewardPoints = client.getVarbitValue(Varbits.ELEMENTAL_POINTS);
-    //    currentCatalyticRewardPoints = client.getVarbitValue(Varbits.CATALYTIC_POINTS);
-    //    if (isInMinigame != (client.getVarbitValue(Varbits.GOTR_ARENA) == 1)) {
-    //      isInMinigame = !isInMinigame;
-    //      if (isInMinigame) {
-    //        checkCellTable();
-    //      }
-    //    }
-    //    // isInMinigame = client.getVarbitValue(Varbits.GOTR_ARENA) == 1;
-    //    activeGame = client.getVarbitValue(Varbits.GOTR_ENDED) == 0;
-    //    inSideArea = client.getVarbitValue(Varbits.PORTAL_AREA) == 1;
   }
 
   /**

@@ -184,29 +184,29 @@ public class GuardiansOfTheRiftHelperOverlay extends Overlay {
     }
     // end pointBalanceHelper
 
+    guardians.removeIf(
+        guardian ->
+            guardian == null
+                || guardian.getConvexHull() == null
+                || (config.hideHighLvl()
+                    && GUARDIAN_INFO.get(guardian.getId()).getLevelRequired()
+                        > client.getBoostedSkillLevel(Skill.RUNECRAFT)));
+    int guardiansRemoved = 0;
     for (GameObject guardian : activeGuardians) {
-      if (guardian == null) {
-        continue;
-      }
-      Shape hull = guardian.getConvexHull();
-      if (hull == null) {
-        continue;
-      }
-
       GuardianInfo info = GUARDIAN_INFO.get(guardian.getId());
-
-      // hideHighLvl
-      if (config.hideHighLvl()
-          && info.getLevelRequired() > client.getBoostedSkillLevel(Skill.RUNECRAFT)) {
-        continue;
-      }
 
       // pointBalanceHelper
       if (config.pointBalanceHelper()) {
-        if (!info.isCatalytic() && balance == PointBalance.NEED_CATALYTIC) {
+        if (!info.isCatalytic()
+            && balance == PointBalance.NEED_CATALYTIC
+            && guardiansRemoved + 1 < activeGuardians.size()) {
           // skip highlighting if we don't need this type
+          guardiansRemoved++;
           continue;
-        } else if (info.isCatalytic() && balance == PointBalance.NEED_ELEMENTAL) {
+        } else if (info.isCatalytic()
+            && balance == PointBalance.NEED_ELEMENTAL
+            && guardiansRemoved + 1 < activeGuardians.size()) {
+          guardiansRemoved++;
           // skip highlighting if we don't need this type
           continue;
         } else if (balance == PointBalance.BALANCED) {
