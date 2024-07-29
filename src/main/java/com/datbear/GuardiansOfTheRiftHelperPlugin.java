@@ -1,8 +1,5 @@
 package com.datbear;
 
-import static com.datbear.util.SearchTiles.searchX;
-import static com.datbear.util.SearchTiles.searchY;
-
 import com.datbear.util.GuardianHelper;
 import com.datbear.util.Varbits;
 import com.google.common.collect.ImmutableSet;
@@ -252,8 +249,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
                     x.getId() == ELEMENTAL_GUARDIAN_STONE_ID
                         || x.getId() == CATALYTIC_GUARDIAN_STONE_ID
                         || x.getId() == POLYELEMENTAL_GUARDIAN_STONE_ID);
-    outlineUnchargedCellTable =
-        Arrays.stream(items).noneMatch(x -> x.getId() == UNCHARGED_CELL_ITEM_ID);
+    checkCellTable(items);
     shouldMakeGuardian =
         Arrays.stream(items).anyMatch(x -> x.getId() == CHISEL_ID)
             && Arrays.stream(items).anyMatch(x -> x.getId() == OVERCHARGED_CELL_ID)
@@ -473,28 +469,68 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
       case LOGIN_SCREEN:
         isInMinigame = false;
         break;
-      case LOGGED_IN:
-        outlineUnchargedCellTable = true;
-        break;
+        //      case LOGGED_IN:
+        //        log.debug("Logged in");
+        //        outlineUnchargedCellTable = true;
+        //        break;
       default:
+    }
+  }
+
+  private void checkCellTable(Item[] items) {
+    outlineUnchargedCellTable =
+        Arrays.stream(items).noneMatch(x -> x.getId() == UNCHARGED_CELL_ITEM_ID);
+  }
+
+  private void checkCellTable() {
+    ItemContainer i = client.getItemContainer(InventoryID.INVENTORY);
+    if (i != null) {
+      checkCellTable(i.getItems());
     }
   }
 
   /**
    * Updates key variables on varbit change.
    *
-   * @param event {@link net.runelite.api.events.VarbitChanged}
+   * @param e {@link net.runelite.api.events.VarbitChanged}
    */
   @Subscribe
-  public void onVarbitChanged(VarbitChanged event) {
+  public void onVarbitChanged(VarbitChanged e) {
     if (!isInMainRegion) {
       return;
     }
-    currentElementalRewardPoints = client.getVarbitValue(Varbits.ELEMENTAL_POINTS);
-    currentCatalyticRewardPoints = client.getVarbitValue(Varbits.CATALYTIC_POINTS);
-    isInMinigame = client.getVarbitValue(Varbits.GOTR_ARENA) == 1;
-    activeGame = client.getVarbitValue(Varbits.GOTR_ENDED) == 0;
-    inSideArea = client.getVarbitValue(Varbits.PORTAL_AREA) == 1;
+    switch (e.getVarbitId()) {
+      case Varbits.ELEMENTAL_POINTS:
+        currentElementalRewardPoints = e.getValue();
+        break;
+      case Varbits.CATALYTIC_POINTS:
+        currentCatalyticRewardPoints = e.getValue();
+        break;
+      case Varbits.GOTR_ARENA:
+        isInMinigame = e.getValue() == 1;
+        if (isInMinigame) {
+          checkCellTable();
+        }
+        break;
+      case Varbits.GOTR_ENDED:
+        activeGame = e.getValue() == 0;
+        break;
+      case Varbits.PORTAL_AREA:
+        inSideArea = e.getValue() == 1;
+        break;
+      default:
+    }
+    //    currentElementalRewardPoints = client.getVarbitValue(Varbits.ELEMENTAL_POINTS);
+    //    currentCatalyticRewardPoints = client.getVarbitValue(Varbits.CATALYTIC_POINTS);
+    //    if (isInMinigame != (client.getVarbitValue(Varbits.GOTR_ARENA) == 1)) {
+    //      isInMinigame = !isInMinigame;
+    //      if (isInMinigame) {
+    //        checkCellTable();
+    //      }
+    //    }
+    //    // isInMinigame = client.getVarbitValue(Varbits.GOTR_ARENA) == 1;
+    //    activeGame = client.getVarbitValue(Varbits.GOTR_ENDED) == 0;
+    //    inSideArea = client.getVarbitValue(Varbits.PORTAL_AREA) == 1;
   }
 
   /**
