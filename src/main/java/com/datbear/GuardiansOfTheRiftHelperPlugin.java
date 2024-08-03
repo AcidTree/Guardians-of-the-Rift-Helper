@@ -74,6 +74,11 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
       "You have (\\d+) catalytic energy and (\\d+) elemental energy";
   private static final Pattern CHECK_POINT_PATTERN = Pattern.compile(CHECK_POINT_REGEX);
   private static final int DIALOG_WIDGET_GROUP = 229;
+  private static final int GUARDIAN_PERCENT_WIDGET =
+      48889874; // parent 48889860 < 48889859 < 48889858
+  private static final int TIMER_WIDGET = 48889861;
+  private static final Pattern TIMER_PATTERN = Pattern.compile("(\\d?\\d):(\\d?\\d)");
+  private static final Pattern PERCENT_PATTERN = Pattern.compile(".+: (\\d?\\d)%");
   private static final int DIALOG_WIDGET_MESSAGE = 1;
   private static final String BARRIER_DIALOG_FINISHING_UP =
       "It looks like the adventurers within are just finishing up. You must<br>wait until they are done to join.";
@@ -182,6 +187,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
   //                      == True  -> Barrier was last seen locked
   //                      == False -> Barrier was last seen unlocked
   private Optional<Boolean> entryBarrierIsLocked = Optional.empty();
+  private boolean sentTimer = false;
 
   /**
    * Checks if in anywhere gotr area/map.
@@ -341,6 +347,26 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
           // For some reason these are reversed compared to everything else
           catalyticRewardPoints = Integer.parseInt(checkMatcher.group(1));
           elementalRewardPoints = Integer.parseInt(checkMatcher.group(2));
+        }
+      }
+    }
+
+    if (config.timerNotify() > 0 && !sentTimer) {
+      Widget timer = client.getWidget(TIMER_WIDGET);
+      Widget percent = client.getWidget(GUARDIAN_PERCENT_WIDGET);
+      if (timer != null && percent != null) {
+        Matcher p = PERCENT_PATTERN.matcher(percent.getText());
+        Matcher t = TIMER_PATTERN.matcher(timer.getText());
+        if (p.matches() && t.matches()) {
+          if (Integer.parseInt(p.group(1)) == 10) {
+            if (((Integer.parseInt(t.group(1)) * 60) + Integer.parseInt(t.group(2)))
+                < config.timerNotify()) {
+              notifier.notify("Timer reached");
+              sentTimer = true;
+            }
+          } else if (Integer.parseInt(p.group(1)) > 10) {
+            sentTimer = true;
+          }
         }
       }
     }
@@ -545,6 +571,7 @@ public class GuardiansOfTheRiftHelperPlugin extends Plugin {
       lastPortalDespawnTime = Optional.of(Instant.now());
       nextGameStart = Optional.empty();
       isFirstPortal = true;
+      sentTimer = false;
     } else if (msg.contains("The rift will become active in 30 seconds.")) {
       nextGameStart = Optional.of(Instant.now().plusSeconds(30));
     } else if (msg.contains("The rift will become active in 10 seconds.")) {

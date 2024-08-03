@@ -308,6 +308,15 @@ public interface GuardiansOfTheRiftHelperConfig extends Config {
     return 3;
   }
 
+  @ConfigItem(
+          keyName = "timerNotify",
+          name = "Timer notification",
+          description = "Notify at x seconds from game start")
+  @Range(min = 0, max = 100)
+  default int timerNotify() {
+    return 0;
+  }
+
   @ConfigItem(keyName = "bankedPoints", name = "", description = "", hidden = true)
   default String bankedPoints() {
     return "";
